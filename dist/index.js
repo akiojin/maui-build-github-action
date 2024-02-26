@@ -8663,13 +8663,33 @@ const fs = __importStar(__nccwpck_require__(3292));
 const tmp = __importStar(__nccwpck_require__(8517));
 const argument_builder_1 = __nccwpck_require__(782);
 function GetBuildTarget() {
-    return core.getInput('build-target').toLowerCase();
+    const buildTarget = core.getInput('build-target').toLowerCase();
+    switch (buildTarget) {
+        default:
+            return buildTarget;
+        case 'ios':
+        case 'iphone':
+            return 'ios';
+        case 'android':
+            return 'android';
+        case 'windows':
+        case 'win':
+        case 'win64':
+            return 'windows';
+        case 'mac':
+        case 'macos':
+        case 'osx':
+        case 'osxuniversal':
+        case 'maccatalyst':
+            return 'maccatalyst';
+    }
 }
 async function GetDisplayVersion() {
     if (core.getInput('display-version')) {
         return core.getInput('display-version');
     }
     if (!core.getInput('project')) {
+        core.warning('Project file is not specified. Defaulting to 1.0.0');
         return '1.0.0';
     }
     var contents = await fs.readFile(core.getInput('project'), { encoding: "utf8" });
@@ -8677,7 +8697,13 @@ async function GetDisplayVersion() {
     core.info(contents);
     core.endGroup();
     var displayVersion = contents.match(/<ApplicationDisplayVersion>([^<]*)<\/ApplicationDisplayVersion>/g);
-    return !displayVersion ? '1.0.0' : displayVersion[1];
+    if (!displayVersion || displayVersion.length < 2 || displayVersion[1] === '') {
+        core.warning('ApplicationDisplayVersion is not specified. Defaulting to 1.0.0');
+        return '1.0.0';
+    }
+    core.info(displayVersion[0]);
+    core.info(displayVersion[1]);
+    return displayVersion[1];
 }
 async function GetDefaultConfiguration() {
     const builder = new argument_builder_1.ArgumentBuilder()
