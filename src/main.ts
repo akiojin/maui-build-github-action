@@ -1,5 +1,7 @@
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
+import * as fs from 'fs/promises'
+import * as tmp from 'tmp'
 import { ArgumentBuilder } from '@akiojin/argument-builder'
 
 function GetBuildTarget(): string
@@ -48,14 +50,24 @@ function GetiOSConfiguration(): ArgumentBuilder
     .Append(`-p:CodesignProvision=${core.getInput('codesign-provision')}`)
 }
 
-function GetAndroidConfiguration(): ArgumentBuilder
+async function GetAndroidConfiguration(): Promise<ArgumentBuilder>
 {
   const builder = GetDefaultConfiguration()
 
-  if (core.getInput('android-signing-keystore')) {
+  if (!core.getInput('android-signing-keystore') && core.getInput('android-signing-keystore-file')) {
+    builder.Append('-p:AndroidKeyStore=false')
+  } else {
+    let keystore = core.getInput('android-signing-keystore-file')
+
+    // android-signing-keystore が指定されている場合は優先的に割り当てる
+    if (core.getInput('android-signing-keystore')) {
+      keystore = tmp.tmpNameSync()
+      await fs.writeFile(keystore, Buffer.from(core.getInput('android-signing-keystore'), 'base64'))
+    }
+
     builder
       .Append('-p:AndroidKeyStore=false')
-      .Append(`-p:AndroidSigningKeyStore=${core.getInput('android-signing-keystore')}`)
+      .Append(`-p:AndroidSigningKeyStore=${keystore}`)
       .Append(`-p:AndroidSigningStorePass=${core.getInput('android-signing-store-pass')}`)
     
     if (core.getInput('android-signing-key-alias')) {
@@ -67,20 +79,18 @@ function GetAndroidConfiguration(): ArgumentBuilder
     } else {
       builder.Append(`-p:AndroidSigningKeyPass=${core.getInput('android-signing-store-pass')}`)
     }
-  } else {
-    builder.Append('-p:AndroidKeyStore=false')
   }
 
   return builder
 }
 
-function GetBuildConfiguration(): ArgumentBuilder
+async function GetBuildConfiguration(): Promise<ArgumentBuilder>
 {
   switch (GetBuildTarget()) {
   case 'ios':
     return GetiOSConfiguration()
   case 'android':
-    return GetAndroidConfiguration()
+    return await GetAndroidConfiguration()
   default:
     return GetDefaultConfiguration()
   }
@@ -88,7 +98,7 @@ function GetBuildConfiguration(): ArgumentBuilder
 
 async function Build(): Promise<void>
 {
-  const builder = GetBuildConfiguration()
+  const builder = await GetBuildConfiguration()
 
   if (core.getInput('additional-arguments')) {
     builder.Append(core.getInput('additional-arguments'))

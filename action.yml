@@ -74,6 +74,8 @@ inputs:
       iOS only.
 
       ex) iPhone Developer: John Doe (XXXXXXXXXX)
+
+      If you use 'akiojin/setup-xcode-environment-github-action', you can specify 'env.APPLE_CERTIFICATE_SIGNING_IDENTITY'.
     required: false
   codesign-provision:
     description: >
@@ -81,11 +83,20 @@ inputs:
       iOS only.
 
       ex) 01234567-8901-2345-6789-????????????
+
+      If you use 'akiojin/setup-xcode-environment-github-action', you can specify 'env.APPLE_PROV_PROFILE_UUID'.
     required: false
   android-signing-keystore:
     description: >
+      Specify the Base64 string of the Android signature keystore file.
+      Base64 strings are set to secret, etc.
+      If either this parameter or 'android-signing-keystore-file' is omitted, no signature is performed.
+      Android only.
+    required: false
+  android-signing-keystore-file:
+    description: >
       Specify the Android signing keystore file path.
-      If omitted, no signature will be performed.
+      If either this parameter or 'android-signing-keystore' is omitted, no signature is performed.
       Android only.
     required: false
   android-signing-store-pass:
