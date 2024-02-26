@@ -8697,12 +8697,10 @@ async function GetDisplayVersion() {
     core.info(contents);
     core.endGroup();
     var displayVersion = contents.match(/<ApplicationDisplayVersion>(.*)<\/ApplicationDisplayVersion>/);
-    if (!displayVersion) {
+    if (!displayVersion || displayVersion.length < 2 || displayVersion[1] === '') {
         core.warning('ApplicationDisplayVersion is not specified. Defaulting to 1.0.0');
         return '1.0.0';
     }
-    core.info(displayVersion[0]);
-    core.info(displayVersion[1]);
     return displayVersion[1];
 }
 async function GetDefaultConfiguration() {
