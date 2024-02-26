@@ -8672,8 +8672,10 @@ async function GetDisplayVersion() {
     if (!core.getInput('project')) {
         return '1.0.0';
     }
-    var contents = await fs.readFile(core.getInput('project'), 'utf8');
+    var contents = await fs.readFile(core.getInput('project'), { encoding: "utf8" });
+    core.startGroup('Read project file');
     core.info(contents);
+    core.endGroup();
     var displayVersion = contents.match(/<ApplicationDisplayVersion>([^<]*)<\/ApplicationDisplayVersion>/g);
     return !displayVersion ? '1.0.0' : displayVersion[1];
 }

@@ -19,9 +19,11 @@ async function GetDisplayVersion(): Promise<string>
     return '1.0.0'
   }
 
-  var contents = await fs.readFile(core.getInput('project'), 'utf8')
+  var contents = await fs.readFile(core.getInput('project'), { encoding: "utf8" })
 
+  core.startGroup('Read project file')
   core.info(contents)
+  core.endGroup()
 
   var displayVersion = contents.match(/<ApplicationDisplayVersion>([^<]*)<\/ApplicationDisplayVersion>/g)
 
