@@ -1,0 +1,115 @@
+name: '.NET MAUI Build'
+description: '.NET MAUI Build GitHub action'
+inputs:
+  additional-arguments:
+    description: >
+      Specify additional arguments to be passed to the build command.
+    required: false
+    default: ''
+  build-target:
+    description: >
+      Specify the target to be built.
+
+      ex) iOS, Android, macOS, Windows, Tizen, or tvOS
+    required: false
+    default: 'Windows'
+  clean:
+    description: >
+      Clean workspace before building
+    required: false
+    default: false
+  verbosity:
+    description: >
+      Specifies the output level of the log.
+      The level can be quiet, minimal, normal, delayed, or diagnostic.
+      The default is normal.
+    required: false
+    default: normal
+  configuration:
+    description: >
+      Select the target configuration to build.
+    required: false
+    default: 'Debug'
+  framework:
+    description: >
+      Select the target framework to build.
+
+      ex) net8.0
+    required: false
+    default: 'net8.0'
+  output:
+    description: >
+      Specify the output directory of the built package.
+      If omitted, the default output directory is specified.
+    required: false
+  project:
+    description: >
+      Specify the project path.
+    required: false
+  app-id:
+    description: >
+      The identifier of the application.
+      If omitted, the ApplicationId set in csproj is not overwritten.
+    required: false
+  display-version:
+    description: >
+      The version number of the application.
+      If omitted, the ApplicationDisplayVersion set in csproj is not overwritten.
+    required: false
+  title:
+    description: >
+      The title of the application.
+      If omitted, the ApplicationTitle set in csproj is not overwritten.
+    required: false
+  version:
+    description: >
+      The version of the build that identifies the iteration of the app.
+      It is set to the 'ApplicationVersion' of csproj.
+      If omitted, 'github.run_number' is specified.
+    required: false
+    default: ${{ github.run_number }}
+  codesign-key:
+    description: >
+      Specify the codesign key.
+      iOS only.
+
+      ex) iPhone Developer: John Doe (XXXXXXXXXX)
+    required: false
+  codesign-provision:
+    description: >
+      Specify the codesign provision.
+      iOS only.
+
+      ex) 01234567-8901-2345-6789-????????????
+    required: false
+  android-signing-keystore:
+    description: >
+      Specify the Android signing keystore file path.
+      If omitted, no signature will be performed.
+      Android only.
+    required: false
+  android-signing-store-pass:
+    description: >
+      Specify the Android signing store password.
+      Required if 'android-signing-keystore' is specified.
+      Android only.
+    required: false
+  android-signing-key-alias:
+    description: >
+      Specify the Android signing key alias.
+      If omitted, the default is used.
+      Android only.
+    required: false
+  android-signing-key-pass:
+    description: >
+      Specify the Android signing key password.
+      Required if 'android-signing-key-alias' is specified.
+      If omitted, 'android-signing-store-pass' is used.
+      Android only.
+    required: false
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
+branding:
+  icon: "upload-cloud"
+  color: "orange"
