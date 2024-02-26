@@ -46,9 +46,9 @@ async function GetDisplayVersion(): Promise<string>
   core.info(contents)
   core.endGroup()
 
-  var displayVersion = contents.match(/<ApplicationDisplayVersion>(.*)<\/ApplicationDisplayVersion>/g)
+  var displayVersion = contents.match(/<ApplicationDisplayVersion>(.*)<\/ApplicationDisplayVersion>/)
 
-  if (!displayVersion || displayVersion.length < 2 || displayVersion[1] === '') {
+  if (!displayVersion) {
     core.warning('ApplicationDisplayVersion is not specified. Defaulting to 1.0.0')
     return '1.0.0'
   }
