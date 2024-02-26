@@ -8696,7 +8696,7 @@ async function GetDisplayVersion() {
     core.startGroup('Read project file');
     core.info(contents);
     core.endGroup();
-    var displayVersion = contents.match(/<ApplicationDisplayVersion>([^<]*)<\/ApplicationDisplayVersion>/g);
+    var displayVersion = contents.match(/<ApplicationDisplayVersion>(.*)<\/ApplicationDisplayVersion>/g);
     if (!displayVersion || displayVersion.length < 2 || displayVersion[1] === '') {
         core.warning('ApplicationDisplayVersion is not specified. Defaulting to 1.0.0');
         return '1.0.0';
