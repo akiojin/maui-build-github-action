@@ -9,7 +9,23 @@ function GetBuildTarget(): string
   return core.getInput('build-target').toLowerCase()
 }
 
-function GetDefaultConfiguration(): ArgumentBuilder
+async function GetDisplayVersion(): Promise<string>
+{
+  if (core.getInput('display-version')) {
+    return core.getInput('display-version')
+  }
+
+  if (!core.getInput('project')) {
+    return '1.0.0'
+  }
+
+  var contents = await fs.readFile(core.getInput('project'), 'utf8')
+  var displayVersion = contents.match(/<ApplicationDisplayVersion>([^<]*)<\/ApplicationDisplayVersion>/g)
+
+  return !displayVersion ? '1.0.0' : displayVersion[0]
+}
+
+async function GetDefaultConfiguration(): Promise<ArgumentBuilder>
 {
   const builder = new ArgumentBuilder()
     .Append('publish')
@@ -17,6 +33,7 @@ function GetDefaultConfiguration(): ArgumentBuilder
     .Append('--verbosity', core.getInput('verbosity'))
     .Append('--framework', `${core.getInput('framework')}-${GetBuildTarget()}`)
     .Append('-p:ArchiveOnBuild=true')
+    .Append(`-p:ApplicationDisplayVersion="${await GetDisplayVersion()}"`)
     .Append(`-p:ApplicationVersion=${core.getInput('version')}`)
 
   if (core.getInput('project')) {
@@ -31,10 +48,6 @@ function GetDefaultConfiguration(): ArgumentBuilder
     builder.Append(`-p:ApplicationId="${core.getInput('app-id')}"`)
   }
 
-  if (core.getInput('display-version')) {
-    builder.Append(`-p:ApplicationDisplayVersion="${core.getInput('display-version')}"`)
-  }
-
   if (core.getInput('title')) {
     builder.Append(`-p:ApplicationTitle="${core.getInput('title')}"`)
   }
@@ -42,22 +55,24 @@ function GetDefaultConfiguration(): ArgumentBuilder
   return builder
 }
 
-function GetiOSConfiguration(): ArgumentBuilder
+async function GetiOSConfiguration(): Promise<ArgumentBuilder>
 {
+  const builder = await GetDefaultConfiguration()
+
   if (core.getInput('codesign-key')) {
-    return GetDefaultConfiguration()
+    return builder
       .Append('-p:RuntimeIdentifier=ios-arm64')
       .Append(`-p:CodesignKey="${core.getInput('codesign-key')}"`)
       .Append(`-p:CodesignProvision="${core.getInput('codesign-provision')}"`)
   } else {
-    return GetDefaultConfiguration()
+    return builder
       .Append('-p:RuntimeIdentifier=ios-arm64')
   }
 }
 
 async function GetAndroidConfiguration(): Promise<ArgumentBuilder>
 {
-  const builder = GetDefaultConfiguration()
+  const builder = await GetDefaultConfiguration()
 
   if (!core.getInput('android-signing-keystore') && core.getInput('android-signing-keystore-file')) {
     builder.Append('-p:AndroidKeyStore=false')
