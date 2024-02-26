@@ -22,7 +22,7 @@ async function GetDisplayVersion(): Promise<string>
   var contents = await fs.readFile(core.getInput('project'), 'utf8')
   var displayVersion = contents.match(/<ApplicationDisplayVersion>([^<]*)<\/ApplicationDisplayVersion>/g)
 
-  return !displayVersion ? '1.0.0' : displayVersion[0]
+  return !displayVersion ? '1.0.0' : displayVersion[1]
 }
 
 async function GetDefaultConfiguration(): Promise<ArgumentBuilder>
