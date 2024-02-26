@@ -28,15 +28,15 @@ function GetDefaultConfiguration(): ArgumentBuilder
   }
 
   if (core.getInput('app-id')) {
-    builder.Append(`-p:ApplicationId=${core.getInput('app-id')}`)
+    builder.Append(`-p:ApplicationId="${core.getInput('app-id')}"`)
   }
 
   if (core.getInput('display-version')) {
-    builder.Append(`-p:ApplicationDisplayVersion=${core.getInput('display-version')}`)
+    builder.Append(`-p:ApplicationDisplayVersion="${core.getInput('display-version')}"`)
   }
 
   if (core.getInput('title')) {
-    builder.Append(`-p:ApplicationTitle=${core.getInput('title')}`)
+    builder.Append(`-p:ApplicationTitle="${core.getInput('title')}"`)
   }
 
   return builder
@@ -47,8 +47,8 @@ function GetiOSConfiguration(): ArgumentBuilder
   if (core.getInput('codesign-key')) {
     return GetDefaultConfiguration()
       .Append('-p:RuntimeIdentifier=ios-arm64')
-      .Append(`-p:CodesignKey=${core.getInput('codesign-key')}`)
-      .Append(`-p:CodesignProvision=${core.getInput('codesign-provision')}`)
+      .Append(`-p:CodesignKey="${core.getInput('codesign-key')}"`)
+      .Append(`-p:CodesignProvision="${core.getInput('codesign-provision')}"`)
   } else {
     return GetDefaultConfiguration()
       .Append('-p:RuntimeIdentifier=ios-arm64')
@@ -72,17 +72,17 @@ async function GetAndroidConfiguration(): Promise<ArgumentBuilder>
 
     builder
       .Append('-p:AndroidKeyStore=false')
-      .Append(`-p:AndroidSigningKeyStore=${keystore}`)
-      .Append(`-p:AndroidSigningStorePass=${core.getInput('android-signing-store-pass')}`)
+      .Append(`-p:AndroidSigningKeyStore="${keystore}"`)
+      .Append(`-p:AndroidSigningStorePass="${core.getInput('android-signing-store-pass')}"`)
     
     if (core.getInput('android-signing-key-alias')) {
-      builder.Append(`-p:AndroidSigningKeyAlias=${core.getInput('android-signing-key-alias')}`)
+      builder.Append(`-p:AndroidSigningKeyAlias="${core.getInput('android-signing-key-alias')}"`)
     }
 
     if (core.getInput('android-signing-key-pass')) {
-      builder.Append(`-p:AndroidSigningKeyPass=${core.getInput('android-signing-key-pass')}`)
+      builder.Append(`-p:AndroidSigningKeyPass="${core.getInput('android-signing-key-pass')}"`)
     } else {
-      builder.Append(`-p:AndroidSigningKeyPass=${core.getInput('android-signing-store-pass')}`)
+      builder.Append(`-p:AndroidSigningKeyPass="${core.getInput('android-signing-store-pass')}"`)
     }
   }
 
