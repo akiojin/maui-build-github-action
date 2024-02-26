@@ -17,7 +17,7 @@ function GetDefaultConfiguration(): ArgumentBuilder
     .Append('--verbosity', core.getInput('verbosity'))
     .Append('--framework', `${core.getInput('framework')}-${GetBuildTarget()}`)
     .Append('-p:ArchiveOnBuild=true')
-    .Append('-p:ApplicationVersion', core.getInput('version'))
+    .Append(`-p:ApplicationVersion=${core.getInput('version')}`)
 
   if (core.getInput('project')) {
     builder.Append(core.getInput('project'))
