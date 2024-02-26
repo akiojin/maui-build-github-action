@@ -8665,13 +8665,25 @@ const argument_builder_1 = __nccwpck_require__(782);
 function GetBuildTarget() {
     return core.getInput('build-target').toLowerCase();
 }
-function GetDefaultConfiguration() {
+async function GetDisplayVersion() {
+    if (core.getInput('display-version')) {
+        return core.getInput('display-version');
+    }
+    if (!core.getInput('project')) {
+        return '1.0.0';
+    }
+    var contents = await fs.readFile(core.getInput('project'), 'utf8');
+    var displayVersion = contents.match(/<ApplicationDisplayVersion>([^<]*)<\/ApplicationDisplayVersion>/g);
+    return !displayVersion ? '1.0.0' : displayVersion[0];
+}
+async function GetDefaultConfiguration() {
     const builder = new argument_builder_1.ArgumentBuilder()
         .Append('publish')
         .Append('--configuration', core.getInput('configuration'))
         .Append('--verbosity', core.getInput('verbosity'))
         .Append('--framework', `${core.getInput('framework')}-${GetBuildTarget()}`)
         .Append('-p:ArchiveOnBuild=true')
+        .Append(`-p:ApplicationDisplayVersion="${await GetDisplayVersion()}"`)
         .Append(`-p:ApplicationVersion=${core.getInput('version')}`);
     if (core.getInput('project')) {
         builder.Append(core.getInput('project'));
@@ -8682,28 +8694,26 @@ function GetDefaultConfiguration() {
     if (core.getInput('app-id')) {
         builder.Append(`-p:ApplicationId="${core.getInput('app-id')}"`);
     }
-    if (core.getInput('display-version')) {
-        builder.Append(`-p:ApplicationDisplayVersion="${core.getInput('display-version')}"`);
-    }
     if (core.getInput('title')) {
         builder.Append(`-p:ApplicationTitle="${core.getInput('title')}"`);
     }
     return builder;
 }
-function GetiOSConfiguration() {
+async function GetiOSConfiguration() {
+    const builder = await GetDefaultConfiguration();
     if (core.getInput('codesign-key')) {
-        return GetDefaultConfiguration()
+        return builder
             .Append('-p:RuntimeIdentifier=ios-arm64')
             .Append(`-p:CodesignKey="${core.getInput('codesign-key')}"`)
             .Append(`-p:CodesignProvision="${core.getInput('codesign-provision')}"`);
     }
     else {
-        return GetDefaultConfiguration()
+        return builder
             .Append('-p:RuntimeIdentifier=ios-arm64');
     }
 }
 async function GetAndroidConfiguration() {
-    const builder = GetDefaultConfiguration();
+    const builder = await GetDefaultConfiguration();
     if (!core.getInput('android-signing-keystore') && core.getInput('android-signing-keystore-file')) {
         builder.Append('-p:AndroidKeyStore=false');
     }
