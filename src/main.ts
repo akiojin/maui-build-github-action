@@ -28,15 +28,15 @@ function GetDefaultConfiguration(): ArgumentBuilder
   }
 
   if (core.getInput('app-id')) {
-    builder.Append('-p:ApplicationId', core.getInput('app-id'))
+    builder.Append(`-p:ApplicationId=${core.getInput('app-id')}`)
   }
 
   if (core.getInput('display-version')) {
-    builder.Append('-p:ApplicationDisplayVersion', core.getInput('display-version'))
+    builder.Append(`-p:ApplicationDisplayVersion=${core.getInput('display-version')}`)
   }
 
   if (core.getInput('title')) {
-    builder.Append('-p:ApplicationTitle', core.getInput('title'))
+    builder.Append(`-p:ApplicationTitle=${core.getInput('title')}`)
   }
 
   return builder
