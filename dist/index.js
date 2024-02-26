@@ -4107,6 +4107,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
 const exec = __importStar(__nccwpck_require__(514));
+const fs = __importStar(__nccwpck_require__(292));
+const tmp = __importStar(__nccwpck_require__(282));
 const argument_builder_1 = __nccwpck_require__(782);
 function GetBuildTarget() {
     return core.getInput('build-target').toLowerCase();
@@ -4142,12 +4144,21 @@ function GetiOSConfiguration() {
         .Append(`-p:CodesignKey=${core.getInput('codesign-key')}`)
         .Append(`-p:CodesignProvision=${core.getInput('codesign-provision')}`);
 }
-function GetAndroidConfiguration() {
+async function GetAndroidConfiguration() {
     const builder = GetDefaultConfiguration();
-    if (core.getInput('android-signing-keystore')) {
+    if (!core.getInput('android-signing-keystore') && core.getInput('android-signing-keystore-file')) {
+        builder.Append('-p:AndroidKeyStore=false');
+    }
+    else {
+        let keystore = core.getInput('android-signing-keystore-file');
+        // android-signing-keystore が指定されている場合は優先的に割り当てる
+        if (core.getInput('android-signing-keystore')) {
+            keystore = tmp.tmpNameSync();
+            await fs.writeFile(keystore, Buffer.from(core.getInput('android-signing-keystore'), 'base64'));
+        }
         builder
             .Append('-p:AndroidKeyStore=false')
-            .Append(`-p:AndroidSigningKeyStore=${core.getInput('android-signing-keystore')}`)
+            .Append(`-p:AndroidSigningKeyStore=${keystore}`)
             .Append(`-p:AndroidSigningStorePass=${core.getInput('android-signing-store-pass')}`);
         if (core.getInput('android-signing-key-alias')) {
             builder.Append(`-p:AndroidSigningKeyAlias=${core.getInput('android-signing-key-alias')}`);
@@ -4159,23 +4170,20 @@ function GetAndroidConfiguration() {
             builder.Append(`-p:AndroidSigningKeyPass=${core.getInput('android-signing-store-pass')}`);
         }
     }
-    else {
-        builder.Append('-p:AndroidKeyStore=false');
-    }
     return builder;
 }
-function GetBuildConfiguration() {
+async function GetBuildConfiguration() {
     switch (GetBuildTarget()) {
         case 'ios':
             return GetiOSConfiguration();
         case 'android':
-            return GetAndroidConfiguration();
+            return await GetAndroidConfiguration();
         default:
             return GetDefaultConfiguration();
     }
 }
 async function Build() {
-    const builder = GetBuildConfiguration();
+    const builder = await GetBuildConfiguration();
     if (core.getInput('additional-arguments')) {
         builder.Append(core.getInput('additional-arguments'));
     }
@@ -4195,6 +4203,14 @@ async function Run() {
     }
 }
 Run();
+
+
+/***/ }),
+
+/***/ 282:
+/***/ ((module) => {
+
+module.exports = eval("require")("tmp");
 
 
 /***/ }),
@@ -4236,6 +4252,14 @@ module.exports = require("events");
 
 "use strict";
 module.exports = require("fs");
+
+/***/ }),
+
+/***/ 292:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("fs/promises");
 
 /***/ }),
 
