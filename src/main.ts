@@ -44,10 +44,15 @@ function GetDefaultConfiguration(): ArgumentBuilder
 
 function GetiOSConfiguration(): ArgumentBuilder
 {
-  return GetDefaultConfiguration()
-    .Append('-p:RuntimeIdentifier=ios-arm64')
-    .Append(`-p:CodesignKey=${core.getInput('codesign-key')}`)
-    .Append(`-p:CodesignProvision=${core.getInput('codesign-provision')}`)
+  if (core.getInput('codesign-key')) {
+    return GetDefaultConfiguration()
+      .Append('-p:RuntimeIdentifier=ios-arm64')
+      .Append(`-p:CodesignKey=${core.getInput('codesign-key')}`)
+      .Append(`-p:CodesignProvision=${core.getInput('codesign-provision')}`)
+  } else {
+    return GetDefaultConfiguration()
+      .Append('-p:RuntimeIdentifier=ios-arm64')
+  }
 }
 
 async function GetAndroidConfiguration(): Promise<ArgumentBuilder>
