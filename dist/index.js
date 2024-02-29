@@ -8741,7 +8741,7 @@ async function GetiOSConfiguration() {
 }
 async function GetAndroidConfiguration() {
     const builder = await GetDefaultConfiguration();
-    if (!core.getInput('android-signing-keystore') && core.getInput('android-signing-keystore-file')) {
+    if (!core.getInput('android-signing-keystore') && !core.getInput('android-signing-keystore-file')) {
         builder.Append('-p:AndroidKeyStore=false');
     }
     else {
