@@ -105,9 +105,7 @@ async function GetAndroidConfiguration(): Promise<ArgumentBuilder>
 {
   const builder = await GetDefaultConfiguration()
 
-  if (!core.getInput('android-signing-keystore') && !core.getInput('android-signing-keystore-file')) {
-    builder.Append('-p:AndroidKeyStore=false')
-  } else {
+  if (core.getInput('android-signing-keystore') || core.getInput('android-signing-keystore-file')) {
     let keystore = core.getInput('android-signing-keystore-file')
 
     // android-signing-keystore が指定されている場合は優先的に割り当てる
@@ -117,7 +115,7 @@ async function GetAndroidConfiguration(): Promise<ArgumentBuilder>
     }
 
     builder
-      .Append('-p:AndroidKeyStore=false')
+      .Append('-p:AndroidKeyStore=true')
       .Append(`-p:AndroidSigningKeyStore="${keystore}"`)
       .Append(`-p:AndroidSigningStorePass="${core.getInput('android-signing-store-pass')}"`)
     
