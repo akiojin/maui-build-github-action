@@ -8741,10 +8741,7 @@ async function GetiOSConfiguration() {
 }
 async function GetAndroidConfiguration() {
     const builder = await GetDefaultConfiguration();
-    if (!core.getInput('android-signing-keystore') && !core.getInput('android-signing-keystore-file')) {
-        builder.Append('-p:AndroidKeyStore=false');
-    }
-    else {
+    if (core.getInput('android-signing-keystore') || core.getInput('android-signing-keystore-file')) {
         let keystore = core.getInput('android-signing-keystore-file');
         // android-signing-keystore が指定されている場合は優先的に割り当てる
         if (core.getInput('android-signing-keystore')) {
@@ -8752,7 +8749,7 @@ async function GetAndroidConfiguration() {
             await fs.writeFile(keystore, Buffer.from(core.getInput('android-signing-keystore'), 'base64'));
         }
         builder
-            .Append('-p:AndroidKeyStore=false')
+            .Append('-p:AndroidKeyStore=true')
             .Append(`-p:AndroidSigningKeyStore="${keystore}"`)
             .Append(`-p:AndroidSigningStorePass="${core.getInput('android-signing-store-pass')}"`);
         if (core.getInput('android-signing-key-alias')) {
