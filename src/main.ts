@@ -105,7 +105,7 @@ async function GetAndroidConfiguration(): Promise<ArgumentBuilder>
 {
   const builder = await GetDefaultConfiguration()
 
-  if (!core.getInput('android-signing-keystore') && core.getInput('android-signing-keystore-file')) {
+  if (!core.getInput('android-signing-keystore') && !core.getInput('android-signing-keystore-file')) {
     builder.Append('-p:AndroidKeyStore=false')
   } else {
     let keystore = core.getInput('android-signing-keystore-file')
