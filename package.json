@@ -31,7 +31,7 @@
     "@akiojin/argument-builder": "1.0.0",
     "@commitlint/cli": "18.6.1",
     "@commitlint/config-conventional": "18.6.2",
-    "@types/node": "20.11.20",
+    "@types/node": "20.11.24",
     "@types/tmp": "0.2.6",
     "@vercel/ncc": "0.38.1",
     "husky": "9.0.7",
