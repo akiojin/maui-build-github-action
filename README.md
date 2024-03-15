@@ -3,15 +3,6 @@
 This action will build in .NET MAUI.
 Output is available on iOS/Android/Windows/macOS platforms.
 
-## Supported Platforms
-
-| Platform | Output |
-| -------- | ------ |
-| iOS      | ipa    |
-| Android  | aab    |
-| Windows  | zip    |
-| macOS    | pkg    |
-
 ## Usage
 
 ### Simple usage
