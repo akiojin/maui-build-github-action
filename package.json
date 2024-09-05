@@ -30,7 +30,7 @@
     "@actions/exec": "1.1.1",
     "@akiojin/argument-builder": "1.0.0",
     "@commitlint/cli": "19.4.1",
-    "@commitlint/config-conventional": "19.1.0",
+    "@commitlint/config-conventional": "19.4.1",
     "@types/node": "22.5.1",
     "@types/tmp": "0.2.6",
     "@vercel/ncc": "0.38.1",
