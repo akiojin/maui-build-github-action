@@ -29,12 +29,9 @@
     "@actions/core": "1.11.1",
     "@actions/exec": "1.1.1",
     "@akiojin/argument-builder": "1.0.0",
-    "@commitlint/cli": "19.6.1",
-    "@commitlint/config-conventional": "19.6.0",
     "@types/node": "22.10.3",
     "@types/tmp": "0.2.6",
     "@vercel/ncc": "0.38.3",
-    "husky": "9.1.7",
     "rimraf": "6.0.1",
     "typescript": "5.7.2"
   },
