@@ -1,6 +1,6 @@
 {
   "name": "maui-build-github-action",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "description": ".NET MAUI build action for GitHub Actions",
   "main": "dist/index.js",
   "scripts": {
