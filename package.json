@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/cloud-creative-studios/maui-build-github-action#readme",
   "dependencies": {
-    "tmp": "0.2.3"
+    "tmp": "0.2.4"
   },
   "devDependencies": {
     "@actions/core": "1.11.1",
