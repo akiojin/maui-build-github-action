@@ -29,7 +29,7 @@
     "@actions/core": "1.11.1",
     "@actions/exec": "1.1.1",
     "@akiojin/argument-builder": "1.0.0",
-    "@types/node": "22.15.29",
+    "@types/node": "24.9.2",
     "@types/tmp": "0.2.6",
     "@vercel/ncc": "0.38.4",
     "rimraf": "6.1.0",
